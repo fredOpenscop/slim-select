@@ -6,7 +6,7 @@ export interface Callbacks {
   open: () => void
   close: () => void
   addable?: (value: string) => Promise<OptionOptional | string> | OptionOptional | string | false | undefined | null
-  setSelected: (value: string[], runAfterChange: boolean) => void
+  setSelected: (value: string | string[], runAfterChange: boolean) => void
   addOption: (option: Option) => void
   search: (search: string) => void
   beforeChange?: (newVal: Option[], oldVal: Option[]) => boolean | void
@@ -230,7 +230,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    main.id = this.settings.id
+    // main.id = this.settings.id+'-main' // Remove for now as it is not needed
 
     // Add label
     main.setAttribute('aria-label', this.settings.ariaLabel)
@@ -241,7 +241,7 @@ export default class Render {
     // Deal with keyboard events on the main div
     // This is to allow for normal selecting
     // when you may not have a search bar
-    main.onkeydown = (e: KeyboardEvent) => {
+    main.onkeydown = (e: KeyboardEvent): boolean => {
       // Convert above if else statemets to switch
       switch (e.key) {
         case 'ArrowUp':
@@ -264,10 +264,12 @@ export default class Render {
           this.callbacks.close()
           return false
       }
+
+      return false
     }
 
     // Add onclick for main div
-    main.onclick = (e: Event) => {
+    main.onclick = (e: Event): void => {
       // Dont do anything if disabled
       if (this.settings.disabled) {
         return
@@ -317,7 +319,11 @@ export default class Render {
           this.callbacks.setSelected([], false)
           this.updateDeselectAll()
         } else {
-          this.callbacks.setSelected([''], false)
+          // Get first option and set it as selected
+          const firstOption = this.store.getFirstOption()
+          const value = firstOption ? firstOption.value : ''
+
+          this.callbacks.setSelected(value, false)
         }
 
         // Check if we need to close the dropdown
@@ -327,7 +333,7 @@ export default class Render {
 
         // Run afterChange callback
         if (this.callbacks.afterChange) {
-          this.callbacks.afterChange(after)
+          this.callbacks.afterChange(this.store.getSelectedOptions())
         }
       }
     }
@@ -412,6 +418,8 @@ export default class Render {
     }
 
     this.renderMultipleValues()
+
+    this.updateDeselectAll()
   }
 
   private renderSingleValue(): void {
@@ -524,16 +532,21 @@ export default class Render {
 
       // If shouldAdd, insertAdjacentElement it to the values container in the order of the selectedOptions
       if (shouldAdd) {
-        if (currentNodes.length === 0) {
+        // If keepOrder is true, we will just append it to the end
+        if (this.settings.keepOrder) {
           this.main.values.appendChild(this.multipleValue(selectedOptions[d]))
-        } else if (d === 0) {
-          this.main.values.insertBefore(this.multipleValue(selectedOptions[d]), currentNodes[d])
         } else {
-          currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
+          // else we will insert it in the order of the selectedOptions
+          if (currentNodes.length === 0) {
+            this.main.values.appendChild(this.multipleValue(selectedOptions[d]))
+          } else if (d === 0) {
+            this.main.values.insertBefore(this.multipleValue(selectedOptions[d]), currentNodes[d])
+          } else {
+            currentNodes[d - 1].insertAdjacentElement('afterend', this.multipleValue(selectedOptions[d]))
+          }
         }
       }
     }
-    this.updateDeselectAll()
   }
 
   public multipleValue(option: Option): HTMLDivElement {
@@ -629,7 +642,7 @@ export default class Render {
 
     // Add id to data-id
     main.dataset.id = this.settings.id
-    main.id = this.settings.id
+    // main.id = this.settings.id + '-content' // Remove for now as it is not needed
 
     // Add search
     const search = this.searchDiv()
@@ -701,7 +714,7 @@ export default class Render {
     }, 100)
 
     // Deal with keyboard events on search input field
-    input.onkeydown = (e: KeyboardEvent) => {
+    input.onkeydown = (e: KeyboardEvent): boolean => {
       // Convert above if else statemets to switch
       switch (e.key) {
         case 'ArrowUp':
@@ -732,6 +745,8 @@ export default class Render {
           }
           return true
       }
+
+      return true // Allow normal typing
     }
 
     main.appendChild(input)

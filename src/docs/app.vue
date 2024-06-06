@@ -2,8 +2,8 @@
 import { defineComponent } from 'vue'
 
 import SlimSelect from '../slim-select'
-import Settings from '../slim-select/settings'
 import { debounce } from '../slim-select/helpers'
+import Settings from '../slim-select/settings'
 import { DataArray } from '../slim-select/store'
 import CarbonAd from './components/carbonad.vue'
 
@@ -67,6 +67,7 @@ export default defineComponent({
             { text: 'contentPosition', value: 'settings#contentPosition' },
             { text: 'openPosition', value: 'settings#openPosition' },
             { text: 'placeholder', value: 'settings#placeholder' },
+            { text: 'selectAll', value: 'settings#selectAll' },
             { text: 'allowDeselect', value: 'settings#allowDeselect' },
             { text: 'display', value: 'settings#display' },
             { text: 'disabled', value: 'settings#disabled' },
@@ -76,10 +77,10 @@ export default defineComponent({
             { text: 'cssClass', value: 'settings#cssClass' },
             { text: 'inlineStyles', value: 'settings#inlineStyles' },
             { text: 'html', value: 'settings#html' },
+            { text: 'keepOrder', value: 'settings#keepOrder'},
             { text: 'search', value: 'settings#search' },
             { text: 'closeOnSelect', value: 'settings#closeOnSelect' },
             { text: 'showOptionTooltips', value: 'settings#showOptionTooltips' },
-            { text: 'selectAll', value: 'settings#selectAll' },
             { text: 'closable', value: 'settings#closable' },
             { text: 'hideSelected', value: 'settings#hideSelected' },
             { text: 'maxValuesShown', value: 'settings#maxValuesShown' },
@@ -111,6 +112,7 @@ export default defineComponent({
             { text: 'getData', value: 'methods#getData' },
             { text: 'setData', value: 'methods#setData' },
             { text: 'enableDisable', value: 'methods#enableDisable' },
+            { text: 'openClose', value: 'methods#openClose' },
             { text: 'search', value: 'methods#search' },
             { text: 'destroy', value: 'methods#destroy' },
           ],
@@ -120,7 +122,10 @@ export default defineComponent({
         {
           label: 'Frameworks',
           closable: 'close',
-          options: [{ text: 'vue', value: 'frameworks#vue' }],
+          options: [
+            { text: 'vue', value: 'vue' },
+            { text: 'react', value: 'react' },
+          ],
         },
       ] as DataArray,
     }

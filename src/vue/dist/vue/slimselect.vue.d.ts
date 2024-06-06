@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="node" />
 import { PropType } from 'vue';
 import SlimSelect, { Events } from '../slim-select';
 import { DataArrayPartial, Option } from '../slim-select/store';
@@ -37,11 +38,12 @@ declare const _default: import("vue").DefineComponent<{
             isOpen: boolean;
             isFullOpen: boolean;
             intervalMove: {
+                ref: () => NodeJS.Timeout;
+                unref: () => NodeJS.Timeout;
                 hasRef: () => boolean;
                 refresh: () => NodeJS.Timeout;
                 [Symbol.toPrimitive]: () => number;
-                ref: () => NodeJS.Timeout;
-                unref: () => NodeJS.Timeout;
+                [Symbol.dispose]: () => void;
             } | null;
             disabled: boolean;
             alwaysOpen: boolean;
@@ -58,6 +60,7 @@ declare const _default: import("vue").DefineComponent<{
             placeholderText: string;
             allowDeselect: boolean;
             hideSelected: boolean;
+            keepOrder: boolean;
             showOptionTooltips: boolean;
             minSelected: number;
             maxSelected: number;
@@ -103,9 +106,10 @@ declare const _default: import("vue").DefineComponent<{
             getSelectedIDs: () => string[];
             getOptgroupByID: (id: string) => import("../slim-select/store").Optgroup | null;
             getOptionByID: (id: string) => Option | null;
+            getSelectType: () => string;
+            getFirstOption: () => Option | null;
             search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import("../slim-select/store").DataArray;
             filter: (filter: ((opt: Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
-            getSelectType: () => string;
         };
         render: {
             settings: {
@@ -116,11 +120,12 @@ declare const _default: import("vue").DefineComponent<{
                 isOpen: boolean;
                 isFullOpen: boolean;
                 intervalMove: {
+                    ref: () => NodeJS.Timeout;
+                    unref: () => NodeJS.Timeout;
                     hasRef: () => boolean;
                     refresh: () => NodeJS.Timeout;
                     [Symbol.toPrimitive]: () => number;
-                    ref: () => NodeJS.Timeout;
-                    unref: () => NodeJS.Timeout;
+                    [Symbol.dispose]: () => void;
                 } | null;
                 disabled: boolean;
                 alwaysOpen: boolean;
@@ -137,6 +142,7 @@ declare const _default: import("vue").DefineComponent<{
                 placeholderText: string;
                 allowDeselect: boolean;
                 hideSelected: boolean;
+                keepOrder: boolean;
                 showOptionTooltips: boolean;
                 minSelected: number;
                 maxSelected: number;
@@ -158,15 +164,16 @@ declare const _default: import("vue").DefineComponent<{
                 getSelectedIDs: () => string[];
                 getOptgroupByID: (id: string) => import("../slim-select/store").Optgroup | null;
                 getOptionByID: (id: string) => Option | null;
+                getSelectType: () => string;
+                getFirstOption: () => Option | null;
                 search: (search: string, searchFilter: (opt: Option, search: string) => boolean) => import("../slim-select/store").DataArray;
                 filter: (filter: ((opt: Option) => boolean) | null, includeOptgroup: boolean) => import("../slim-select/store").DataArray;
-                getSelectType: () => string;
             };
             callbacks: {
                 open: () => void;
                 close: () => void;
                 addable?: ((value: string) => string | false | import("../slim-select/store").OptionOptional | Promise<string | import("../slim-select/store").OptionOptional> | null | undefined) | undefined;
-                setSelected: (value: string[], runAfterChange: boolean) => void;
+                setSelected: (value: string | string[], runAfterChange: boolean) => void;
                 addOption: (option: Option) => void;
                 search: (search: string) => void;
                 beforeChange?: ((newVal: Option[], oldVal: Option[]) => boolean | void) | undefined;
@@ -294,7 +301,7 @@ declare const _default: import("vue").DefineComponent<{
         destroy: () => void;
     } | null;
     getCleanValue(val: string | string[] | undefined): string | string[];
-}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "update:modelValue"[], "update:modelValue", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
+}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, "update:modelValue"[], "update:modelValue", import("vue").PublicProps, Readonly<import("vue").ExtractPropTypes<{
     modelValue: {
         type: PropType<string | string[] | undefined>;
     };
