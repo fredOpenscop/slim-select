@@ -8,7 +8,6 @@ export default class Select {
     listen: boolean;
     private observer;
     constructor(select: HTMLSelectElement);
-    private updateOptionsList;
     enable(): void;
     disable(): void;
     hideUI(): void;

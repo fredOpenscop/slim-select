@@ -1269,16 +1269,8 @@ class Select {
         this.select.addEventListener('change', this.valueChange, {
             passive: true,
         });
-        this.select.addEventListener('slim:updated', this.updateOptionsList.bind(this), {
-            passive: true,
-        });
         this.observer = new MutationObserver(this.observeCall.bind(this));
         this.changeListen(true);
-    }
-    updateOptionsList(ev) {
-        const { detail } = ev;
-        if (this.onOptionsChange)
-            this.onOptionsChange(detail);
     }
     enable() {
         this.select.disabled = false;
